@@ -1,17 +1,18 @@
 #!/usr/bin/env ruby
+# coding: utf-8
 require 'rubygems'
 require 'bundler/setup'
 require 'ruby-progressbar'
 require 'fileutils'
 require 'pry'
 
-require_relative 'lib/mico'
+require_relative 'lib/mico/api/client'
 
 class Downloader
   attr_reader :mico
 
   def initialize
-    @mico = Mico.new
+    @mico = Mico::Api::Client.new
   end
 
   def initial_submit(id, filename, image_url)

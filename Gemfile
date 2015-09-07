@@ -1,7 +1,4 @@
 source 'https://rubygems.org'
 
-gem 'httparty'
-gem 'netrc'
-gem 'pry'
-gem 'mongo'
-gem 'ruby-progressbar'
+# Specify your gem's dependencies in mico-api-client.gemspec
+gemspec

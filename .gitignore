@@ -1,2 +1,14 @@
+# Datafiles ignored by default
 *.json
 *.csv
+
+# Gem stuff
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
