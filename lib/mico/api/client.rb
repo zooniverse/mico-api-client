@@ -26,7 +26,6 @@ module Mico
       def auth
         {username: @username, password: @password}
       end
-      # Your code goes here...
     end
   end
 end
