@@ -67,7 +67,7 @@ bar = ProgressBar.create total: rows.size,
 
 
 rows.each.with_index do |row, idx|
-  id = "#{dirname}-#{row[0]}-#{row[1]}"
+  id = "#{row[0]}-#{row[1]}"
   xml_filename = File.join(dirname, "#{id}.json")
 
   if File.exist?(xml_filename)
