@@ -54,7 +54,7 @@ end
 
 csvfile = ARGV[0]
 postfix = ARGV[1] || SecureRandom.uuid
-dirname = File.basename(csvfile, File.extname(csvfile)) + "-#{postfix}"
+dirname = "#{postfix}/#{File.basename(csvfile, File.extname(csvfile))}"
 puts "Creating #{dirname}"
 FileUtils.mkdir_p(dirname)
 
