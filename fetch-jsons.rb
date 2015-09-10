@@ -13,6 +13,9 @@ class Downloader
 
   def initialize
     @mico = Mico::Api::Client.new
+    @submitted = 0
+    @finished = 0
+    @failed = 0
   end
 
   def initial_submit(id, filename, image_url)
@@ -28,6 +31,7 @@ class Downloader
       binding.pry
       exit 1
     end
+    @submitted += 1
   end
 
   def update_or_do_nothing(id, filename, image_url)
@@ -37,12 +41,20 @@ class Downloader
     when "submitted"
       # puts "CHECK #{filename}"
       response = mico.check(id)
+      @submitted += 1
       write(filename, response)
-    when "finished", "failed"
+    when "finished"
+      @finished += 1
       # puts "DONE #{filename}"
+    when "failed"
+      @failed += 1
     else
       raise "unknown status #{data['status']}"
     end
+  end
+
+  def print_status_report
+    puts "Submitted: #{@submitted} - Finished: #{@finished} - Failed: #{@failed}"
   end
 
   private
@@ -77,3 +89,5 @@ rows.each.with_index do |row, idx|
   end
   bar.increment
 end
+
+downloader.print_status_report
