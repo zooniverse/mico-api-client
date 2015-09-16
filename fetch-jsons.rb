@@ -35,14 +35,18 @@ class Downloader
   end
 
   def update_or_do_nothing(id, filename, image_url)
-    data = JSON.load(File.read(filename))
-
+    file_source = File.read(filename)
+    data = JSON.load(file_source)
     case data["status"]
     when "submitted"
       # puts "CHECK #{filename}"
       response = mico.check(id)
-      @submitted += 1
-      write(filename, response)
+      if response["status"]=="finished"
+        @finished += 1
+      elsif response["status"]=="failed"
+        @failed += 1
+      end
+      write(filename, JSON.dump(response))
     when "finished"
       @finished += 1
       # puts "DONE #{filename}"
