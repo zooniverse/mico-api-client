@@ -5,6 +5,7 @@ require 'bundler/setup'
 require 'ruby-progressbar'
 require 'fileutils'
 require 'pry'
+require 'date'
 
 require_relative 'lib/mico/api/client'
 
@@ -19,6 +20,7 @@ class Downloader
   end
 
   def initial_submit(id, filename, image_url)
+    id = Date.today.strftime("%Y-%m-%d-%H-%M-%S") + '-' + id
     # puts "Submitting #{id}"
     response = mico.submit(id, image_url)
 
