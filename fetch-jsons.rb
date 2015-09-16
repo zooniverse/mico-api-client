@@ -5,7 +5,6 @@ require 'bundler/setup'
 require 'ruby-progressbar'
 require 'fileutils'
 require 'pry'
-require 'date'
 
 require_relative 'lib/mico/api/client'
 
@@ -20,7 +19,6 @@ class Downloader
   end
 
   def initial_submit(id, filename, image_url)
-    id = Date.today.strftime("%Y-%m-%d-%H-%M-%S") + '-' + id
     # puts "Submitting #{id}"
     response = mico.submit(id, image_url)
 
@@ -66,30 +64,36 @@ class Downloader
   end
 end
 
-csvfile = ARGV[0]
-postfix = ARGV[1] || SecureRandom.uuid
-dirname = "#{postfix}/#{File.basename(csvfile, File.extname(csvfile))}"
-puts "Creating #{dirname}"
-FileUtils.mkdir_p(dirname)
+if ARGV.length<2
+  puts "\nUsage: ruby fetch-jsons.rb <csv file> <naming suffix for this run>\n\n"
+else
+  csvfile = ARGV[0]
+  suffix = ARGV[1] || SecureRandom.uuid
 
-downloader = Downloader.new
-rows = CSV.read(csvfile)
-bar = ProgressBar.create total: rows.size,
-                         format: "%t [%e]: %bᗧ%i %c/%C done",
-                         progress_mark: ' ',
-                         remainder_mark: '･'
+  dirname = "#{suffix}/#{File.basename(csvfile, File.extname(csvfile))}"
+  puts "Creating #{dirname}"
+  FileUtils.mkdir_p(dirname)
+
+  downloader = Downloader.new
+  rows = CSV.read(csvfile)
+  bar = ProgressBar.create total: rows.size,
+                           format: "%t [%e]: %bᗧ%i %c/%C done",
+                           progress_mark: ' ',
+                           remainder_mark: '･'
 
 
-rows.each.with_index do |row, idx|
-  id = "#{row[0]}-#{row[1]}"
-  xml_filename = File.join(dirname, "#{id}.json")
+  rows.each.with_index do |row, idx|
+    id = "#{row[0]}-#{row[1]}-#{suffix}"
+    filename = "#{row[0]}-#{row[1]}.json"
+    xml_filename = File.join(dirname, filename)
 
-  if File.exist?(xml_filename)
-    downloader.update_or_do_nothing(id, xml_filename, row[2])
-  else
-    downloader.initial_submit(id, xml_filename, row[2])
+    if File.exist?(xml_filename)
+      downloader.update_or_do_nothing(id, xml_filename, row[2])
+    else
+      downloader.initial_submit(id, xml_filename, row[2])
+    end
+    bar.increment
   end
-  bar.increment
-end
 
-downloader.print_status_report
+  downloader.print_status_report
+end
