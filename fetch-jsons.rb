@@ -19,7 +19,7 @@ class Downloader
   end
 
   def initial_submit(id, filename, image_url)
-    # puts "Submitting #{id}"
+    puts "SUBMIT #{id}"
     response = mico.submit(id, image_url)
 
     case response.code
@@ -39,7 +39,7 @@ class Downloader
     data = JSON.load(file_source)
     case data["status"]
     when "submitted"
-      # puts "CHECK #{filename}"
+      puts "UPDATE #{filename}"
       response = mico.check(id)
       if response["status"]=="finished"
         @finished += 1
@@ -49,7 +49,7 @@ class Downloader
       write(filename, JSON.dump(response))
     when "finished"
       @finished += 1
-      # puts "DONE #{filename}"
+      puts "SKIP #{filename}"
     when "failed"
       @failed += 1
     else
