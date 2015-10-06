@@ -9,44 +9,35 @@ require 'pry'
 require_relative 'lib/mico/api/client'
 
 class Downloader
-  attr_reader :mico
-
   def initialize
-    @mico = Mico::Api::Client.new
     @submitted = 0
     @finished = 0
     @failed = 0
   end
 
-  def initial_submit(id, filename, image_url)
-    puts "SUBMIT #{id}"
-    response = mico.submit(id, image_url)
-
-    case response.code
-    when 200, 201
-      write(filename, response.body)
-    when 409, 502
-      write(filename, JSON.dump({status: "failed", reason: response.body}))
-    else
-      binding.pry
-      exit 1
-    end
+  def initial_submit(filename, image_url)
+    puts "SUBMIT #{image_url}"
+    response = Mico::Api::Client::AnimalDetection.submit(image_url)
+    write(filename, JSON.dump(response.attributes))
+  rescue
+    write(filename, JSON.dump({status: "failed", reason: response.attributes}))
+  ensure
     @submitted += 1
   end
 
-  def update_or_do_nothing(id, filename, image_url)
+  def update_or_do_nothing(filename, image_url)
     file_source = File.read(filename)
     data = JSON.load(file_source)
     case data["status"]
     when "submitted"
       puts "UPDATE #{filename}"
-      response = mico.check(id)
+      response = Mico::Api::Client::AnimalDetection.new(data["id"]).reload
       if response["status"]=="finished"
         @finished += 1
       elsif response["status"]=="failed"
         @failed += 1
       end
-      write(filename, JSON.dump(response))
+      write(filename, JSON.dump(response.attributes))
     when "finished"
       @finished += 1
       puts "SKIP #{filename}"
@@ -79,22 +70,20 @@ else
   FileUtils.mkdir_p(dirname)
 
   downloader = Downloader.new
-  rows = CSV.read(csvfile)
-  bar = ProgressBar.create total: rows.size,
+  bar = ProgressBar.create total: `wc -l #{csvfile}`.to_i,
                            format: "%t [%e]: %bᗧ%i %c/%C done",
                            progress_mark: ' ',
                            remainder_mark: '･'
 
 
-  rows.each.with_index do |row, idx|
-    id = "#{row[0]}-#{row[1]}-#{suffix}"
+  CSV.foreach(csvfile) do |row|
     filename = "#{row[0]}-#{row[1]}.json"
     xml_filename = File.join(dirname, filename)
 
     if File.exist?(xml_filename)
-      downloader.update_or_do_nothing(id, xml_filename, row[2])
+      downloader.update_or_do_nothing(xml_filename, row[2])
     else
-      downloader.initial_submit(id, xml_filename, row[2])
+      downloader.initial_submit(xml_filename, row[2])
     end
     bar.increment
   end

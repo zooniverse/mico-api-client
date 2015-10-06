@@ -1,30 +1,30 @@
 require 'httparty'
 require 'netrc'
 require "mico/api/client/version"
+require 'mico/api/client/animal_detection'
 
 module Mico
   module Api
-    class Client
+    module Client
       include HTTParty
       base_uri 'demo1.mico-project.eu:8080'
 
-      def initialize
-        netrc = Netrc.read
-        @username, @password = netrc[self.class.base_uri]
+      def self.get(path, options = {})
+        super(path, options.merge(basic_auth: auth))
       end
 
-      def submit(id, url)
-        self.class.put("/broker/zooniverse/#{id}", query: {url: url}, basic_auth: auth)
-      end
-
-      def check(id)
-        self.class.get("/broker/zooniverse/#{id}", basic_auth: auth)
+      def self.put(path, options = {})
+        super(path, options.merge(basic_auth: auth))
       end
 
       private
 
-      def auth
-        {username: @username, password: @password}
+      def self.auth
+        return @auth if @auth
+
+        netrc = Netrc.read
+        username, password = netrc[self.base_uri]
+        @auth = {username: username, password: password}
       end
     end
   end

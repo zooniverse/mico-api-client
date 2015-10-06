@@ -1,6 +1,6 @@
 module Mico
   module Api
-    class Client
+    module Client
       VERSION = "0.1.0"
     end
   end

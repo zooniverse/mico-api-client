@@ -6,7 +6,7 @@ require 'csv'
 
 db = Mongo::Client.new('mongodb://localhost:27017/talk')
 
-CSV.open("talk.csv", 'wb', headers: [:discussion_id, :comment_id, :subject_id, :user_id, :body, :timestamp]) do |csv|
+CSV.open("talk.csv", 'wb', headers: [:discussion_id, :comment_id, :subject_id, :user_id, :body, :timestamp], write_headers: true) do |csv|
   db['discussions'].find(project_id: BSON::ObjectId("5077375154558fabd7000001")).each do |discussion|
     print '.'
 
