@@ -5,9 +5,9 @@ require "mico/api/client/version"
 module Mico
   module Api
     module Client
-      class AnimalDetection
+      class SentimentAnalysis
         def self.submit(url)
-          response = Client.put("/broker/zooniverse/animaldetection", query: {url: url})
+          response = Client.put("/broker/zooniverse/sentimentanalysis", query: {url: url})
           new(response["id"], response)
         end
 
@@ -27,7 +27,7 @@ module Mico
         end
 
         def reload
-          @attributes = Client.get("/broker/zooniverse/animaldetection/#{id}")
+          @attributes = Client.get("/broker/zooniverse/sentimentanalysis/#{id}")
           self
         end
       end

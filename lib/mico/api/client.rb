@@ -2,6 +2,7 @@ require 'httparty'
 require 'netrc'
 require "mico/api/client/version"
 require 'mico/api/client/animal_detection'
+require 'mico/api/client/sentiment_analysis'
 
 module Mico
   module Api
