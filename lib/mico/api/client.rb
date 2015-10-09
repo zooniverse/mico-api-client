@@ -9,7 +9,6 @@ module Mico
     module Client
       include HTTParty
       base_uri 'demo1.mico-project.eu:8080'
-      debug_output
 
       def self.get(path, options = {})
         super(path, options.merge(basic_auth: auth))
