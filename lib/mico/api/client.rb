@@ -35,6 +35,11 @@ module Mico
         username, password = netrc[self.base_uri]
         @auth = {username: username, password: password}
       end
+
+      def self.auth=(hash)
+        raise unless hash.key?(:username) and hash.key?(:password)
+        @auth = hash
+      end
     end
   end
 end
