@@ -8,6 +8,7 @@ module Mico
       class TextAnalysis
         def self.submit(comment)
           response = Client.post("/broker/zooniverse/textanalysis", body: {comment: comment})
+          response["mico_url"] = "http://abowyer:T5KjcYFt7@demo1.mico-project.eu:8080/broker/zooniverse/textanalysis/#{id}"
           new(response["id"], response)
         end
 
