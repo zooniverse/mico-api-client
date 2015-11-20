@@ -13,6 +13,7 @@ module Mico
         end
 
         attr_reader :id
+        attr_reader :mico_url
 
         def initialize(id, attributes = {})
           @id = id
