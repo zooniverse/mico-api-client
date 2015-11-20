@@ -8,7 +8,7 @@ module Mico
       class AnimalDetection
         def self.submit(url)
           response = Client.put("/broker/zooniverse/animaldetection", query: {url: url})
-          response["mico_url"] = "http://abowyer:T5KjcYFt7@demo1.mico-project.eu:8080/broker/zooniverse/animaldetection/#{id}"
+          response["mico_url"] = "http://abowyer:T5KjcYFt7@demo1.mico-project.eu:8080/broker/zooniverse/animaldetection/#{response['id']}"
           new(response["id"], response)
         end
 
