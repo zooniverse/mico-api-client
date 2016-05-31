@@ -7,8 +7,7 @@ module Mico
     module Client
       class AnimalDetection
         def self.submit(url)
-          response = Client.put("/broker/zooniverse/animaldetection", query: {url: url})
-          response["mico_url"] = "http://abowyer:T5KjcYFt7@demo1.mico-project.eu:8080/broker/zooniverse/animaldetection/#{response['id']}"
+          response = Client.put("/showcase-webapp/zooniverse/animaldetection", query: {url: url})
           new(response["id"], response)
         end
 
@@ -29,7 +28,7 @@ module Mico
         end
 
         def reload
-          @attributes = Client.get("/broker/zooniverse/animaldetection/#{id}")
+          @attributes = Client.get("/showcase-webapp/zooniverse/animaldetection/#{id}")
           self
         end
       end
