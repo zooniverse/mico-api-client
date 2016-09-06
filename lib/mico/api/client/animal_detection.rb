@@ -6,8 +6,8 @@ module Mico
   module Api
     module Client
       class AnimalDetection
-        def self.submit(url)
-          response = Client.put("/showcase-webapp/zooniverse/animaldetection", query: {url: url})
+        def self.submit(url, mode = "yolo")
+          response = Client.put("/showcase-webapp/zooniverse/animaldetection", query: {url: url, mode: mode})
           new(response["id"], response)
         end
 
